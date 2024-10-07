@@ -1,0 +1,58 @@
+---
+# tasks file for cmd_from_github
+- name: Retrieve information from github api
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/{{ githube_repo }}/releases/latest"
+    return_content: true
+  register: cmd_from_github_api
+
+- name: Check package version
+  ansi_colle.mods.cmp_pkg:
+    name: "{{ get_cmd_version }}"
+    desired_version: "{{ cmd_from_github_api.json.tag_name[1:] }}"
+  register: cmd_from_github_cmp
+
+- name: Execute the following if version is not the latest
+  when: (cmd_from_github_cmp.rc == 2) or (cmd_from_github_cmp.rc == 3)
+  block:
+    - name: Create temporary directory
+      ansible.builtin.tempfile:
+        state: directory
+      register: __tempdir
+
+    - name: Download executables for linux x64 system
+      ansible.builtin.get_url:
+        url: "{{ cmd_from_github_cmp.json.assets[release_asset_index].browser_download_url }}"
+        dest: "{{ __tempdir.path }}/"
+        mode: '0644'
+
+    - name: Move file to destination if download_type is 'move_to_destination'
+      when: download_type == 'move_to_destination'
+      ansible.builtin.copy:
+        src: "{{ __tempdir.path }}/"
+        dest: "{{ cmd_destination }}/"
+        remote_src: true
+        mode: "{{ cmd_mode }}"
+        owner: "{{ cmd_owner }}"
+        group: "{{ cmd_group }}"
+
+    - name: Extract file to destination if download_type is 'extract_and_move'
+      when: download_type == 'extract_and_move'
+      ansible.builtin.unarchive:
+        src: "{{ __tempdir.path }}/"
+        dest: "{{ cmd_destination }}/"
+        remote_src: true
+        mode: "{{ cmd_mode }}"
+        owner: "{{ cmd_owner }}"
+        group: "{{ cmd_group }}"
+
+    - name: Remove temp directory
+      when: download_type != 'download_only'
+      ansible.builtin.file:
+        path: "{{ __tempdir.path }}"
+        state: absent
+
+    - name: Return temp directory contain downloaded file
+      when: download_type == 'download_only'
+      ansible.builtin.set_fact:
+        cmd_from_github_rv: "{{ __tempdir.path }}"

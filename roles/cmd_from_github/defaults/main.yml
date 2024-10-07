@@ -1,0 +1,11 @@
+---
+# defaults file for cmd_from_github
+get_cmd_version: ""
+github_repo: ""
+cmd_mode: "0755"
+cmd_owner: "root"
+cmd_group: "root"
+release_asset_index: 0
+download_type: "move_to_destination"
+cmd_destination: "/usr/local/bin"
+# https://api.github.com/repos/PowerShell/PowerShell/releases/latest
