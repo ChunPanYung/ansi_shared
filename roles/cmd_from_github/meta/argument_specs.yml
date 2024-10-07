@@ -1,13 +1,13 @@
 ---
 argument_specs:
   main:
-    short_description: Main entry for the download_from_github.
+    short_description: Main entry for the cmd_from_github.
     description:
       - This role will compare existing command version to version from github using api.
-      - It will download binary if command does not exist, or github release a new version.
-      - It only support Linux.
+      - It will download file from github if command does not exist, or new versiond detected.
       - It will move to destination specifed, or you can supply download only option.
-      - All return value will be saved in a variable call download_cmd_from_github_rv, type dict.
+      - All return value will be saved in a variable call cmd_from_github_rv, type dict.
+      - It only support Linux.
     author:
       - Chun Pan Yung
     options:
@@ -18,30 +18,30 @@ argument_specs:
           - Complete command to get the currenct command version.
           - It will use provided command to get currenct command version.
           - It only take 2 words.
-      github_url_api:
+      github_repo:
         type: "str"
         required: true
         description:
-          - github REST API endpoints for latest release.
-          - Supply only the owner and repo name in the form of '{owner}/repo'.
-      file_mode:
+          - Using github REST API endpoints for getting latest release.
+          - Supply only the owner and repo name in the form of '{owner}/{repo}'.
+      cmd_mode:
         type: str
         required: false
         default: "0755"
         description:
-          - Default file permission.
-      file_owner:
+          - Default cmd permission.
+      cmd_owner:
         type: "str"
         required: false
         default: "root"
         description:
-          - Default file owner.
-      file_group:
+          - Default cmd owner.
+      cmd_group:
         type: "str"
         required: false
         default: "root"
         description:
-          - Default file group.
+          - Default cmd group.
       release_asset_index:
         type: "int"
         required: false
@@ -59,15 +59,14 @@ argument_specs:
           - download_only
           - extract_and_move
         description:
-          - Where should the file goes after download.
-          - move_to_destionation, will move according to value of 'file_destination'.
-          - extract_and_move, will move according to value of 'file_destination' after extracting file.
-          - download_only, download file only and return download file path, ignore value from 'file_destination'.
-      file_destination:
+          - Where should the cmd goes after download.
+          - move_to_destionation, will move according to value of 'cmd_destination'.
+          - extract_and_move, will move according to value of 'cmd_destination' after extracting cmd.
+          - download_only, download file only and return download file path, ignore value from 'cmd_destination'.
+      cmd_destination:
         type: "str"
         required: false
-        default: "usr/local/bin"
+        default: "/usr/local/bin"
         description:
           - Where should the cmd goes after download.
           - This value is ignored if 'download_type' == 'download_only'.
-# https://api.github.com/repos/PowerShell/PowerShell/releases/latest
