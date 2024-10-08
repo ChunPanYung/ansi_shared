@@ -2,7 +2,7 @@
 # tasks file for cmd_from_github
 - name: Retrieve information from github api
   ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ githube_repo }}/releases/latest"
+    url: "https://api.github.com/repos/{{ github_repo }}/releases/latest"
     return_content: true
   register: cmd_from_github_api
 

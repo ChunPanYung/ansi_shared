@@ -7,7 +7,7 @@
 
     - name: Test - download binary only
       ansible.builtin.include_role:
-        name: cmd_from_github
+        name: github_release
       vars:
         github_repo: "k3d-io/k3d"
         release_asset_index: 4
