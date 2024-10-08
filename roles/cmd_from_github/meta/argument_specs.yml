@@ -6,7 +6,7 @@ argument_specs:
       - This role will compare existing command version to version from github using api.
       - It will download file from github if command does not exist, or new versiond detected.
       - It will move to destination specifed, or you can supply download only option.
-      - All return value will be saved in a variable call cmd_from_github_rv, type dict.
+      - All return value will be saved in a variable 'cmd_from_github_rv', type dict.
       - It only support Linux.
     author:
       - Chun Pan Yung
@@ -28,20 +28,17 @@ argument_specs:
         type: str
         required: false
         default: "0755"
-        description:
-          - Default cmd permission.
+        description: Executable file permission.
       cmd_owner:
         type: "str"
         required: false
-        default: "root"
-        description:
-          - Default cmd owner.
+        default: ""
+        description: Executable file owner.
       cmd_group:
         type: "str"
         required: false
-        default: "root"
-        description:
-          - Default cmd group.
+        default: ""
+        description: Executable file group.
       release_asset_index:
         type: "int"
         required: false
@@ -70,3 +67,8 @@ argument_specs:
         description:
           - Where should the cmd goes after download.
           - This value is ignored if 'download_type' == 'download_only'.
+      sudo_privilege:
+        type: bool
+        required: false
+        default: false
+        description: Set it true if executable is copied to admin directory.
