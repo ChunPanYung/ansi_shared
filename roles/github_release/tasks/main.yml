@@ -26,8 +26,8 @@
         dest: "{{ __tempdir.path }}/"
         mode: '0644'
 
-    - name: Move file to destination if download_type is 'move_to_destination'
-      when: download_type == 'move_to_destination'
+    - name: Move file to destination if github_release_download_type is 'move_to_destination'
+      when: github_release_download_type == 'move_to_destination'
       become: "{{ github_release_sudo_privilege }}"
       ansible.builtin.copy:
         src: "{{ __tempdir.path }}/"
@@ -37,9 +37,9 @@
         owner: "{{ github_release_cmd_owner | default(omit) }}"
         group: "{{ github_release_cmd_group | default(omit) }}"
 
-    - name: Extract file to destination if download_type is 'extract_and_move'
+    - name: Extract file to destination if github_release_download_type is 'extract_and_move'
       become: "{{ sudo_privilege }}"
-      when: download_type == 'extract_and_move'
+      when: github_release_download_type == 'extract_and_move'
       ansible.builtin.unarchive:
         src: "{{ __tempdir.path }}/"
         dest: "{{ github_release_destination }}/"
@@ -49,12 +49,12 @@
         group: "{{ github_release_cmd_group | default(omit) }}"
 
     - name: Remove temp directory
-      when: download_type != 'download_only'
+      when: github_release_download_type != 'download_only'
       ansible.builtin.file:
         path: "{{ __tempdir.path }}"
         state: absent
 
     - name: Return variable containing downloaded file path
-      when: download_type == 'download_only'
+      when: github_release_download_type == 'download_only'
       ansible.builtin.set_fact:
         cmd_from_github_rv: "{{ __tempdir.path }}"
