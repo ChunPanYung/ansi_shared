@@ -1,19 +1,19 @@
 ---
-# tasks file for cmd_from_github
+# tasks file for github_release
 - name: Retrieve information from github api
   ansible.builtin.uri:
-    url: "https://api.github.com/repos/{{ github_repo }}/releases/latest"
+    url: "https://api.github.com/repos/{{ github_release_repo }}/releases/latest"
     return_content: true
-  register: cmd_from_github_api
+  register: __github_api
 
 - name: Check package version
   ansi_colle.mods.cmp_pkg:
-    name: "{{ get_cmd_version }}"
-    desired_version: "{{ cmd_from_github_api.json.tag_name[1:] }}"
-  register: cmd_from_github_cmp
+    name: "{{ github_release_get_cmd }}"
+    desired_version: "{{ __github_api.json.tag_name[1:] }}"
+  register: __cmp_output
 
 - name: Execute the following if version is not the latest
-  when: (cmd_from_github_cmp.rc == 2) or (cmd_from_github_cmp.rc == 3)
+  when: (__cmp_output.rc == 2) or (__cmp_output.rc == 3)
   block:
     - name: Create temporary directory
       ansible.builtin.tempfile:
@@ -22,31 +22,31 @@
 
     - name: Download executables for linux x64 system
       ansible.builtin.get_url:
-        url: "{{ cmd_from_github_cmp.json.assets[release_asset_index].browser_download_url }}"
+        url: "{{ __cmp_output.json.assets[release_asset_index].browser_download_url }}"
         dest: "{{ __tempdir.path }}/"
         mode: '0644'
 
     - name: Move file to destination if download_type is 'move_to_destination'
       when: download_type == 'move_to_destination'
-      become: "{{ sudo_privilege }}"
+      become: "{{ github_release_sudo_privilege }}"
       ansible.builtin.copy:
         src: "{{ __tempdir.path }}/"
-        dest: "{{ cmd_destination }}/"
+        dest: "{{ github_release_destination }}/"
         remote_src: true
-        mode: "{{ cmd_mode }}"
-        owner: "{{ cmd_owner | default(omit) }}"
-        group: "{{ cmd_group | default(omit) }}"
+        mode: "{{ github_release_cmd_mode }}"
+        owner: "{{ github_release_cmd_owner | default(omit) }}"
+        group: "{{ github_release_cmd_group | default(omit) }}"
 
     - name: Extract file to destination if download_type is 'extract_and_move'
       become: "{{ sudo_privilege }}"
       when: download_type == 'extract_and_move'
       ansible.builtin.unarchive:
         src: "{{ __tempdir.path }}/"
-        dest: "{{ cmd_destination }}/"
+        dest: "{{ github_release_destination }}/"
         remote_src: true
-        mode: "{{ cmd_mode }}"
-        owner: "{{ cmd_owner | default(omit) }}"
-        group: "{{ cmd_group | default(omit) }}"
+        mode: "{{ github_release_cmd_mode }}"
+        owner: "{{ github_release_cmd_owner | default(omit) }}"
+        group: "{{ github_release_cmd_group | default(omit) }}"
 
     - name: Remove temp directory
       when: download_type != 'download_only'

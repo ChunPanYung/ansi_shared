@@ -1,7 +1,7 @@
 ---
 argument_specs:
   main:
-    short_description: Main entry for the cmd_from_github.
+    short_description: Main entry for the github_release.
     description:
       - This role will compare existing command version to version from github using api.
       - It will download file from github if command does not exist, or new versiond detected.
@@ -11,35 +11,35 @@ argument_specs:
     author:
       - Chun Pan Yung
     options:
-      get_cmd_version:
+      github_release_get_cmd:
         type: "str"
         required: true
         description:
           - Complete command to get the currenct command version.
           - It will use provided command to get currenct command version.
           - It only take 2 words.
-      github_repo:
+      github_release_repo:
         type: "str"
         required: true
         description:
           - Using github REST API endpoints for getting latest release.
           - Supply only the owner and repo name in the form of '{owner}/{repo}'.
-      cmd_mode:
+      github_release_cmd_mode:
         type: str
         required: false
         default: "0755"
         description: Executable file permission.
-      cmd_owner:
+      github_release_cmd_owner:
         type: "str"
         required: false
         default: ""
         description: Executable file owner.
-      cmd_group:
+      github_release_cmd_group:
         type: "str"
         required: false
         default: ""
         description: Executable file group.
-      release_asset_index:
+      github_release_asset_index:
         type: "int"
         required: false
         default: 0
@@ -47,7 +47,7 @@ argument_specs:
           - Asset index number from latest github release page.
           - It always starts with 0.
           - First item is 0, second item is 1, and third item is 3 etc.
-      download_type:
+      github_release_download_type:
         type: "str"
         required: false
         default: "move_to_desination"
@@ -57,17 +57,17 @@ argument_specs:
           - extract_and_move
         description:
           - Where should the cmd goes after download.
-          - move_to_destionation, will move according to value of 'cmd_destination'.
-          - extract_and_move, will move according to value of 'cmd_destination' after extracting cmd.
-          - download_only, download file only and return download file path, ignore value from 'cmd_destination'.
-      cmd_destination:
+          - move_to_destionation, will move according to value of 'github_release_destination'.
+          - extract_and_move, will move according to value of 'github_release_destination' after extracting cmd.
+          - download_only, download file only and return download file path, ignore value from 'github_release_destination'.
+      github_release_destination:
         type: "str"
         required: false
         default: "/usr/local/bin"
         description:
           - Where should the cmd goes after download.
           - This value is ignored if 'download_type' == 'download_only'.
-      sudo_privilege:
+      github_release_sudo_privilege:
         type: bool
         required: false
         default: false

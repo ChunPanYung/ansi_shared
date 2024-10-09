@@ -1,11 +1,11 @@
 ---
 # defaults file for cmd_from_github
-get_cmd_version: ""
-github_repo: ""
-cmd_mode: "0755"
-cmd_owner: ""
-cmd_group: ""
+github_release_get_cmd: ""
+github_release_repo: ""
+github_release_cmd_mode: "0755"
+github_release_cmd_owner: ""
+github_release_cmd_group: ""
 release_asset_index: 0
-download_type: "move_to_destination"
-cmd_destination: "/usr/local/bin"
-sudo_privilege: false
+github_release_download_type: "move_to_destination"
+github_release_destionation: "/usr/local/bin"
+github_release_sudo_privilege: false
