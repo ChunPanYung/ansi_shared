@@ -31,7 +31,7 @@
       become: "{{ github_release_sudo_privilege }}"
       ansible.builtin.copy:
         src: "{{ __tempdir.path }}/"
-        dest: "{{ github_release_destination }}/"
+        dest: "{{ github_release_destination }}"
         remote_src: true
         mode: "{{ github_release_cmd_mode }}"
         owner: "{{ github_release_cmd_owner | default(omit) }}"
@@ -42,7 +42,7 @@
       when: github_release_download_type == 'extract_and_move'
       ansible.builtin.unarchive:
         src: "{{ __tempdir.path }}/"
-        dest: "{{ github_release_destination }}/"
+        dest: "{{ github_release_destination }}"
         remote_src: true
         mode: "{{ github_release_cmd_mode }}"
         owner: "{{ github_release_cmd_owner | default(omit) }}"
