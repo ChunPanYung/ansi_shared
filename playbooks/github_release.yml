@@ -12,3 +12,4 @@
         github_release_repo: "k3d-io/k3d"
         github_release_asset_index: 4
         github_release_download_type: "download_only"
+        github_release_get_cmd: "k3d --version"
